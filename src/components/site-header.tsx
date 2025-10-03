@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ModeToggle } from "./ui/mode-toggle";
+import { Crown } from "lucide-react";
 
 export function SiteHeader() {
 	return (
@@ -13,9 +15,14 @@ export function SiteHeader() {
 				/>
 				<h1 className="text-base font-medium">Dashboard</h1>
 				<div className="ml-auto flex items-center gap-2">
-					<Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-						<p className="dark:text-foreground">Free Plan</p>
+					<Button asChild size="sm" className="hidden sm:flex">
+						<p className="dark:text-foreground">Upgrade to Growth Plan <span><Crown /></span></p>
 					</Button>
+					<Separator
+						orientation="vertical"
+						className="data-[orientation=vertical]:h-4"
+					/>
+					<ModeToggle />
 				</div>
 			</div>
 		</header>
