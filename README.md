@@ -4,7 +4,7 @@
 
 ### Auth
 
-```
+```sql
 EXTERNAL_USERS
 - id (pk)
 - email
@@ -22,20 +22,22 @@ INTERNAL_USERS
 - email
 - password_hash
 - full_name
-- role ENUM[admin, deal_manager, analyst, bizdev, due_diligence]
+- role ENUM[admin, deal_manager, analyst, bizdev, due_diligence, team_member, operation_manager]
 - created_at (timestamp)
 - updated_at (timestamp)
 
 SESSIONS
 - id (pk)
+- user_type
 - user_id (fk -> EXTERNAL_USERS.id or INTERNAL_USERS.id)
 - session_token
 - expires_at (timestamp)
+- created_at (timestamp)
 ```
 
 ### CRM
 
-```
+```sql
 PIPELINE_ITEMS
 - id (pk)
 - title
@@ -65,7 +67,7 @@ KPI
 
 ### Valuations
 
-```
+```sql
 EVALUATIONS
 - id (pk)
 - client_id (fk -> EXTERNAL_USERS.id)
@@ -84,7 +86,7 @@ VALUATIONS
 
 ### Shared Access
 
-```
+```sql
 FILES
 - id (pk)
 - pipeline_item_id (fk -> PIPELINE_ITEMS.id)
@@ -100,13 +102,14 @@ FILES
 PERMISSIONS
 - id (pk)
 - file_id (fk -> FILES.id)
+- user_type ENUM[external, internal]
 - user_id (fk -> EXTERNAL_USERS.id or INTERNAL_USERS.id)
 - access_level ENUM[read, write, admin]
 ```
 
 ### Audit
 
-```
+```sql
 AUDIT_LOGS
 - id (pk)
 - user_type ENUM[external, internal]
