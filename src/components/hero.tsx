@@ -57,7 +57,7 @@ const Hero7 = ({
 	},
 }: Hero7Props) => {
 	return (
-		<section className="py-32">
+		<section className="py-24">
 			<div className="container text-center">
 				<div className="mx-auto flex items-center max-w-5xl flex-col gap-6">
 					<Apple size={100} />
