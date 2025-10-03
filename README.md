@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AppleBites Prototype in Nextjs
 
-## Getting Started
+## Database Schema
 
-First, run the development server:
+### Auth
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+EXTERNAL_USERS
+- id (pk)
+- email
+- password_hash
+- full_name
+- company_name
+- role ENUM[lead, buyer, seller]
+- subscription ENUM[free, growth, empire]
+- tag ENUM[nurture, progress]
+- created_at (timestamp)
+- updated_at (timestamp)
+
+INTERNAL_USERS
+- id (pk)
+- email
+- password_hash
+- full_name
+- role ENUM[admin, deal_manager, analyst, bizdev, due_diligence]
+- created_at (timestamp)
+- updated_at (timestamp)
+
+SESSIONS
+- id (pk)
+- user_id (fk -> EXTERNAL_USERS.id or INTERNAL_USERS.id)
+- session_token
+- expires_at (timestamp)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### CRM
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+PIPELINE_ITEMS
+- id (pk)
+- title
+- type ENUM[opportunity, deal]
+- direction ENUM[buy, sell]
+- status ENUM[open, closed, lost]
+- stage (jsonb)   // workflow stage or progress detail
+- client_id (fk -> EXTERNAL_USERS.id)
+- manager_id (fk -> INTERNAL_USERS.id)
+- created_at
+- updated_at
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+TASKS
+- id (pk)
+- pipeline_item_id (fk -> PIPELINE_ITEMS.id)
+- assigned_to (fk -> INTERNAL_USERS.id)
+- title
+- status ENUM[pending, in_progress, completed]
+- due_date (timestamp)
 
-## Learn More
+KPI
+- id (pk)
+- metric
+- value (numeric)
+- period (date or enum[monthly, quarterly, yearly])
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Valuations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+EVALUATIONS
+- id (pk)
+- client_id (fk -> EXTERNAL_USERS.id)
+- naics_code
+- ebitda
+- score ENUM[A, B, C, D, E, F]
+- created_at
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+VALUATIONS
+- id (pk)
+- evaluation_id (fk -> EVALUATIONS.id)
+- narrative (text)
+- report_url (optional, link to file or generated PDF)
+- created_at
+```
 
-## Deploy on Vercel
+### Shared Access
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+FILES
+- id (pk)
+- pipeline_item_id (fk -> PIPELINE_ITEMS.id)
+- uploaded_by (fk -> INTERNAL_USERS.id or EXTERNAL_USERS.id)
+- category ENUM[buyer, seller, finance, hr, operations, legal]
+- filename
+- filetype
+- url (storage link)
+- status ENUM[draft, final, signed]
+- created_at
+- updated_at
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+PERMISSIONS
+- id (pk)
+- file_id (fk -> FILES.id)
+- user_id (fk -> EXTERNAL_USERS.id or INTERNAL_USERS.id)
+- access_level ENUM[read, write, admin]
+```
+
+### Audit
+
+```
+AUDIT_LOGS
+- id (pk)
+- user_type ENUM[external, internal]
+- user_id (fk)
+- action
+- target_table
+- target_id
+- timestamp
+- metadata (jsonb)
+```
