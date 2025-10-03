@@ -1,12 +1,16 @@
+import { Hero7 } from "@/components/hero";
+import { Pricing2 } from "@/components/pricing";
 import Link from "next/link";
 
 export default function Home() {
 	return (
-		<div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+		<div>
 			This is the landing page.
 			<Link href="/login" prefetch={false}>
 				Sign In
 			</Link>
+			<Hero7 />
+			<Pricing2 />
 		</div>
 	);
 }
